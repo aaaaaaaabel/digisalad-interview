@@ -1,0 +1,32 @@
+@use "./variables" as *;
+
+@mixin container($width: $container-width) {
+  width: min(100%, $width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@mixin section-spacing {
+  padding: $section-padding 0;
+
+  @media (max-width: 768px) {
+    padding: $section-padding-mobile 0;
+  }
+}
+
+@mixin heading-style($size: 48px, $weight: 600) {
+  font-family: $font-family-heading;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: clamp(28px, 6vw, $size);
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

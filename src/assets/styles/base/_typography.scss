@@ -1,0 +1,30 @@
+@use "../abstracts/variables" as *;
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: $font-family-base;
+  color: $text-color;
+  line-height: 1.6;
+  background-color: $bg-light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-family-heading;
+  font-weight: 600;
+  line-height: 1.2;
+  color: inherit;
+}
+
+p {
+  font-size: 1rem;
+}

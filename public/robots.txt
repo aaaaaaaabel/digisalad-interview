@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://digisalad.com/sitemap.xml
+
+# 禁止爬取開發相關檔案
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.vscode/
+

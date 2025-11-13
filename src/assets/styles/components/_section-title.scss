@@ -1,0 +1,44 @@
+@use "../abstracts/variables" as *;
+
+.section-title {
+  text-align: center;
+  display: grid;
+  gap: 12px;
+
+  &__eyebrow {
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $primary-color;
+  }
+
+  &__heading {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  &__description {
+    font-size: 16px;
+    color: rgba($bg-dark, 0.6);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  &--left {
+    text-align: left;
+
+    .section-title__description {
+      margin-left: 0;
+    }
+  }
+
+  &--right {
+    text-align: right;
+
+    .section-title__description {
+      margin-right: 0;
+    }
+  }
+}

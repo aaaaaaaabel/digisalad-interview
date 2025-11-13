@@ -1,0 +1,664 @@
+@use "../abstracts/variables" as *;
+
+.menu-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(32px, 6vh, 60px) clamp(16px, 4vw, 40px);
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    mix-blend-mode: normal;
+    backdrop-filter: blur(0px);
+    pointer-events: none;
+
+    // 漸層疊加層
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #585880 10%, #26c6d0 100%);
+      opacity: 0.9;
+      z-index: 1;
+    }
+  }
+
+  &__inner {
+    position: relative;
+    width: min(1160px, 100%);
+    min-height: min(720px, 100% - clamp(64px, 12vh, 120px));
+    padding: clamp(32px, 4vw, 56px);
+    display: grid;
+    gap: clamp(32px, 4vw, 48px);
+    color: #ffffff;
+    z-index: 1;
+  }
+
+  &__close {
+    position: absolute;
+    top: clamp(18px, 3vw, 32px);
+    right: clamp(18px, 3vw, 32px);
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 2;
+
+    span {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 22px;
+      height: 2px;
+      border-radius: 999px;
+      background: #ffffff;
+      transition: transform 0.2s ease;
+      transform-origin: center;
+
+      &:nth-child(1) {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      &:nth-child(2) {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+    }
+
+    &:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  &__header {
+    display: grid;
+    gap: 16px;
+    max-width: 520px;
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+
+  &__logo {
+    display: block;
+    width: clamp(120px, 18vw, 160px);
+  }
+
+  &__tagline {
+    font-size: clamp(16px, 2vw, 20px);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+  }
+
+  &__grid {
+    display: grid;
+    --menu-popup-gap: clamp(28px, 4vw, 40px);
+    column-gap: var(--menu-popup-gap);
+    row-gap: var(--menu-popup-gap);
+    grid-template-columns:
+      clamp(260px, 28vw, 380px)
+      clamp(220px, 20vw, 290px)
+      clamp(260px, 28vw, 380px);
+    align-items: start;
+    justify-content: center;
+  }
+}
+
+.menu-card {
+  position: relative;
+  width: 100%;
+  padding: clamp(28px, 4vw, 40px);
+  border-radius: clamp(28px, 4vw, 40px);
+  text-decoration: none;
+  color: #ffffff;
+  background: var(--menu-card-bg);
+  overflow: visible;
+  box-shadow: 0 42px 80px rgba(12, 30, 58, 0.25);
+  isolation: isolate;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  --menu-card-offset-x: 0px;
+  --menu-card-offset-y: 32px;
+  --menu-card-rotate: 0deg;
+  --menu-card-overshoot-scale: 1.06;
+  opacity: 0;
+  transform: translate3d(
+      var(--menu-card-offset-x),
+      var(--menu-card-offset-y),
+      0
+    )
+    rotateZ(var(--menu-card-rotate)) scale(0.9);
+  will-change: opacity, transform;
+
+  // 使用 CSS 變數控制佈局
+  display: flex;
+  flex-direction: var(--card-direction, column);
+  justify-content: var(--card-justify, flex-end);
+  align-items: var(--card-align, flex-start);
+  gap: var(--card-gap, 0);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--menu-card-bg);
+    border-radius: inherit;
+    z-index: -2;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--menu-card-overlay);
+    background-size: cover;
+    background-position: center;
+    mix-blend-mode: soft-light;
+    opacity: 0.4;
+    border-radius: inherit;
+    z-index: -3;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 52px 100px rgba(12, 30, 58, 0.38);
+
+    &::after {
+      opacity: 0.55;
+    }
+  }
+
+  // 圖示
+  &__icon {
+    width: auto;
+    height: auto;
+    max-width: clamp(75px, 12vw, 120px);
+    max-height: clamp(75px, 12vw, 120px);
+    object-fit: contain;
+    z-index: 1;
+    opacity: 0.85;
+    pointer-events: none;
+    flex-shrink: 0;
+    order: var(--icon-order, 0);
+
+    // 當圖示需要絕對定位時
+    position: var(--icon-position, static);
+    top: var(--icon-top, auto);
+    right: var(--icon-right, auto);
+    bottom: var(--icon-bottom, auto);
+    left: var(--icon-left, auto);
+  }
+
+  // 文字內容
+  &__content {
+    position: relative;
+    display: grid;
+    // gap: clamp(6px, 1.2vw, 10px);
+    justify-items: var(--content-justify, start);
+    text-align: var(--content-align, left);
+    z-index: 2;
+    order: var(--content-order, 1);
+    flex: var(--content-flex, 0 1 auto);
+  }
+
+  &__subtitle {
+    font-size: $h4;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 500;
+  }
+
+  &__title {
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(8px, 1.3vw, 12px);
+  }
+
+  &__dot {
+    width: clamp(8px, 1.3vw, 11px);
+    height: clamp(8px, 1.3vw, 11px);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__arrow {
+    display: none !important;
+  }
+
+  // ===== ABOUT US：水平排列，圖示在左 =====
+  &--about {
+    --card-direction: row;
+    --card-align: center;
+    --card-gap: clamp(16px, 2.5vw, 24px);
+    --icon-order: 0;
+    --content-order: 1;
+    --content-flex: 1;
+
+    .menu-card__icon {
+      max-width: clamp(75px, 12vw, 110px);
+      max-height: clamp(75px, 12vw, 110px);
+    }
+  }
+
+  // ===== WORKS：水平排列，圖示在左下 =====
+  &--works {
+    --card-direction: row;
+    --card-align: flex-end;
+    --card-gap: clamp(16px, 2.5vw, 24px);
+    --icon-order: 0;
+    --content-order: 1;
+    --content-flex: 1;
+
+    .menu-card__icon {
+      max-width: clamp(60px, 10vw, 90px);
+      max-height: clamp(60px, 10vw, 90px);
+    }
+  }
+
+  // ===== CAREERS：垂直排列，金幣在上 =====
+  &--careers {
+    --card-direction: column;
+    --card-justify: flex-end;
+    --icon-order: 0;
+    --content-order: 1;
+
+    .menu-card__icon {
+      max-width: clamp(100px, 16vw, 140px);
+      max-height: clamp(100px, 16vw, 140px);
+      margin-bottom: clamp(20px, 3vw, 32px);
+    }
+  }
+
+  // ===== INSIGHTS：垂直排列，小黃瓜在上 =====
+  &--insights {
+    --card-direction: column;
+    --card-justify: flex-end;
+    --icon-order: 0;
+    --content-order: 1;
+
+    .menu-card__icon {
+      max-width: clamp(55px, 9vw, 85px);
+      max-height: clamp(55px, 9vw, 85px);
+      margin-bottom: clamp(12px, 2vw, 20px);
+    }
+  }
+
+  // ===== SERVICES：垂直排列，胡蘿蔔在上 =====
+  &--services {
+    --card-direction: column;
+    --card-justify: flex-end;
+    --icon-order: 0;
+    --content-order: 1;
+
+    .menu-card__icon {
+      max-width: clamp(65px, 10vw, 100px);
+      max-height: clamp(65px, 10vw, 100px);
+      margin-bottom: clamp(12px, 2vw, 20px);
+    }
+  }
+
+  // ===== CONTACT：文字靠左，青色文字，紅色圓點 =====
+  &--contact,
+  &--light {
+    --card-direction: column;
+    --card-justify: center;
+    --card-align: flex-start;
+    --content-justify: start;
+    --content-align: left;
+
+    color: #26c6d0 !important;
+
+    .menu-card__subtitle {
+      color: #262626 !important;
+    }
+
+    .menu-card__title {
+      color: #26c6d0 !important;
+      justify-content: flex-start;
+    }
+
+    .menu-card__dot {
+      background: #ff6b7a !important;
+    }
+  }
+
+  // ===== RWD：平板以下統一回到垂直佈局 =====
+  @media (max-width: 1100px) {
+    // 所有卡片統一為垂直佈局，內容順序：圖片 → subtitle → title
+    &--about,
+    &--works,
+    &--careers,
+    &--insights,
+    &--services,
+    &--contact {
+      --card-direction: column;
+      --card-align: flex-start;
+      --card-justify: flex-end;
+      --card-gap: clamp(16px, 3vw, 24px); // 統一間距：圖片與 subtitle 之間
+      --icon-order: 0;
+      --content-order: 1;
+      --content-flex: 0 1 auto; // 移除 flex: 1，確保內容區域不會拉伸
+    }
+
+    // 統一圖示大小和間距 - 強制覆蓋所有卡片的 margin
+    &--about .menu-card__icon,
+    &--works .menu-card__icon,
+    &--careers .menu-card__icon,
+    &--insights .menu-card__icon,
+    &--services .menu-card__icon,
+    &--contact .menu-card__icon {
+      max-width: clamp(70px, 12vw, 100px) !important;
+      max-height: clamp(70px, 12vw, 100px) !important;
+      margin: 0 !important; // 強制移除所有 margin
+      margin-top: 0 !important;
+      margin-right: 0 !important;
+      margin-bottom: 0 !important; // 特別強調移除 bottom margin
+      margin-left: 0 !important;
+      align-self: flex-start; // 確保圖示靠左對齊
+    }
+
+    // 統一內容區域間距（subtitle 與 title 之間）
+    &--about .menu-card__content,
+    &--works .menu-card__content,
+    &--careers .menu-card__content,
+    &--insights .menu-card__content,
+    &--services .menu-card__content,
+    &--contact .menu-card__content {
+      gap: clamp(
+        10px,
+        2vw,
+        14px
+      ) !important; // 統一 subtitle 與 title 之間的間距
+      width: 100% !important; // 確保內容區域寬度一致
+      margin: 0 !important; // 移除所有 margin
+      flex: 0 1 auto !important; // 確保 flex 不會影響間距
+      align-self: stretch; // 確保內容區域寬度一致
+    }
+
+    // 統一 subtitle 字體大小（pad 尺寸）
+    &--about .menu-card__subtitle,
+    &--works .menu-card__subtitle,
+    &--careers .menu-card__subtitle,
+    &--insights .menu-card__subtitle,
+    &--services .menu-card__subtitle,
+    &--contact .menu-card__subtitle {
+      font-size: 14px !important;
+    }
+  }
+
+  // ===== RWD：手機統一調整圖示大小 =====
+  @media (max-width: 768px) {
+    .menu-card__icon {
+      max-width: clamp(60px, 15vw, 90px) !important;
+      max-height: clamp(60px, 15vw, 90px) !important;
+    }
+
+    &--about,
+    &--works,
+    &--careers,
+    &--insights {
+      --card-gap: clamp(10px, 3vw, 14px);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .menu-card__icon {
+      max-width: clamp(50px, 18vw, 80px) !important;
+      max-height: clamp(50px, 18vw, 80px) !important;
+    }
+  }
+}
+
+.menu-popup.is-open .menu-card {
+  animation: menu-card-enter 0.72s cubic-bezier(0.2, 0.68, 0.35, 1.05) forwards,
+    menu-card-shadow 0.72s cubic-bezier(0.2, 0.68, 0.35, 1.05) forwards;
+  animation-delay: calc(0.28s + var(--menu-card-delay, 0) * 0.12s),
+    calc(0.28s + var(--menu-card-delay, 0) * 0.12s);
+  animation-fill-mode: both, both;
+}
+
+.menu-popup.is-open .menu-popup__header {
+  animation: menu-header-enter 0.5s cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+  animation-delay: 0.16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu-popup.is-open .menu-card {
+    animation: none;
+  }
+
+  .menu-popup__header {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu-popup.is-open .menu-popup__header {
+    animation: none;
+  }
+}
+
+@keyframes menu-card-enter {
+  0% {
+    opacity: 0;
+    transform: translate3d(
+        var(--menu-card-offset-x),
+        var(--menu-card-offset-y),
+        0
+      )
+      rotateZ(var(--menu-card-rotate)) scale(0.88);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translate3d(0, -10px, 0) rotateZ(0deg)
+      scale(var(--menu-card-overshoot-scale, 1.05));
+  }
+
+  75% {
+    opacity: 1;
+    transform: translate3d(0, 6px, 0) rotateZ(0deg) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateZ(0deg) scale(1);
+  }
+}
+
+@keyframes menu-card-shadow {
+  0% {
+    box-shadow: 0 24px 50px rgba(12, 30, 58, 0.08);
+  }
+
+  55% {
+    box-shadow: 0 46px 100px rgba(12, 30, 58, 0.34);
+  }
+
+  100% {
+    box-shadow: 0 42px 80px rgba(12, 30, 58, 0.25);
+  }
+}
+
+@keyframes menu-header-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 1101px) {
+  .menu-popup__grid {
+    position: relative;
+    display: block;
+    --menu-popup-gap: clamp(24px, 3vw, 32px);
+    --menu-card-wide: clamp(300px, 28vw, 380px);
+    --menu-card-narrow: clamp(220px, 20vw, 290px);
+    --menu-card-about-height: clamp(180px, 20vw, 210px);
+    --menu-card-works-height: clamp(240px, 30vw, 320px);
+    --menu-card-careers-height: clamp(320px, 38vw, 430px);
+    --menu-card-insights-height: clamp(200px, 24vw, 282px);
+    --menu-card-offset: clamp(24px, 3vw, 40px);
+    width: calc(
+      var(--menu-card-wide) * 2 + var(--menu-card-narrow) +
+        var(--menu-popup-gap) * 2
+    );
+    min-height: max(
+      calc(
+        var(--menu-card-about-height) + var(--menu-popup-gap) +
+          var(--menu-card-works-height)
+      ),
+      calc(
+        var(--menu-card-careers-height) - var(--menu-card-offset) +
+          var(--menu-popup-gap) + var(--menu-card-insights-height)
+      )
+    );
+    margin: 0 auto;
+    row-gap: 0;
+    column-gap: 0;
+  }
+
+  .menu-card {
+    position: absolute;
+    aspect-ratio: auto;
+    padding: clamp(28px, 3.2vw, 36px);
+  }
+
+  .menu-card--about {
+    top: 0;
+    left: 0;
+    width: var(--menu-card-wide);
+    height: var(--menu-card-about-height);
+  }
+
+  .menu-card--works {
+    top: calc(var(--menu-card-about-height) + var(--menu-popup-gap));
+    left: 0;
+    width: var(--menu-card-wide);
+    height: var(--menu-card-works-height);
+  }
+
+  .menu-card--careers {
+    top: calc(var(--menu-card-offset) * -1);
+    left: calc(var(--menu-card-wide) + var(--menu-popup-gap));
+    width: var(--menu-card-narrow);
+    height: var(--menu-card-careers-height);
+  }
+
+  .menu-card--insights {
+    top: calc(
+      var(--menu-card-careers-height) - var(--menu-card-offset) +
+        var(--menu-popup-gap)
+    );
+    left: calc(var(--menu-card-wide) + var(--menu-popup-gap));
+    width: var(--menu-card-narrow);
+    height: var(--menu-card-insights-height);
+  }
+
+  .menu-card--services {
+    top: 0;
+    left: calc(
+      var(--menu-card-wide) + var(--menu-popup-gap) + var(--menu-card-narrow) +
+        var(--menu-popup-gap)
+    );
+    width: var(--menu-card-wide);
+    height: var(--menu-card-works-height);
+  }
+
+  .menu-card--contact {
+    top: calc(var(--menu-card-works-height) + var(--menu-popup-gap));
+    left: calc(
+      var(--menu-card-wide) + var(--menu-popup-gap) + var(--menu-card-narrow) +
+        var(--menu-popup-gap)
+    );
+    width: var(--menu-card-wide);
+    height: var(--menu-card-about-height);
+  }
+}
+
+@media (max-width: 1100px) {
+  .menu-popup__grid {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    column-gap: clamp(20px, 3vw, 32px);
+    row-gap: clamp(20px, 4vw, 36px);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  // 統一所有卡片高度
+  .menu-card {
+    position: relative;
+    aspect-ratio: auto;
+    height: clamp(260px, 38vw, 300px);
+    padding: clamp(24px, 4vw, 32px);
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-popup__inner {
+    padding: 24px 20px 60px;
+  }
+
+  .menu-popup__grid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    column-gap: clamp(16px, 4vw, 24px);
+    row-gap: clamp(16px, 6vw, 28px);
+    max-width: 100%;
+  }
+
+  .menu-card {
+    height: clamp(220px, 55vw, 260px);
+  }
+}
+
+@media (max-width: 520px) {
+  .menu-popup__grid {
+    grid-template-columns: minmax(220px, 1fr);
+    justify-content: center;
+    column-gap: 0;
+    row-gap: clamp(16px, 8vw, 24px);
+  }
+
+  .menu-card {
+    height: clamp(200px, 62vw, 240px);
+  }
+}
+
+.menu-fade-enter-active,
+.menu-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.menu-fade-enter-from,
+.menu-fade-leave-to {
+  opacity: 0;
+}

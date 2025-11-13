@@ -1,0 +1,9 @@
+export { default as uxDesignIcon } from "./UXDesign.png";
+export { default as uiDesignIcon } from "./UIDesign.png";
+export { default as websiteDevelopmentIcon } from "./websitedevelopment.png";
+export { default as mobileAppIcon } from "./mobileappdevelopment.png";
+export { default as ecommerceIcon } from "./ecommerce.png";
+export { default as customerLoyaltyIcon } from "./customer-loyalty.png";
+export { default as digitalTransformationIcon } from "./digital-transformation.png";
+export { default as digitalMarketingIcon } from "./digital-marketing.png";
+export { default as brandingIcon } from "./branding.png";

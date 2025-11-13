@@ -1,0 +1,245 @@
+@use "../../abstracts/variables" as *;
+@use "../../abstracts/mixins" as mixins;
+
+.hero {
+  position: relative;
+  min-height: 90vh;
+  height: 100vh;
+  color: #ffffff;
+  overflow: visible;
+  background-color: #000;
+  padding-top: 80px;
+  border-bottom-left-radius: 48px;
+  border-bottom-right-radius: 48px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.hero .hero__background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-bottom-left-radius: 48px;
+  border-bottom-right-radius: 48px;
+}
+
+.hero .hero__video {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero .hero__video iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100vh * (16 / 9)));
+  height: max(100vh, calc(100vw * (9 / 16)));
+  transform: translate(-50%, -50%);
+}
+
+.hero .hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.hero .hero__container {
+  position: relative;
+  z-index: 2;
+  width: min(100%, $container-width);
+  margin: 50px auto 0;
+  display: flex;
+}
+
+.hero .hero__content {
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero .hero__content img {
+  width: clamp(180px, 22vw, 240px);
+}
+
+.hero .hero__heading {
+  margin: clamp(32px, 5vw, 48px) 0 0;
+  display: grid;
+  gap: clamp(12px, 2vw, 18px);
+  font-size: clamp(24px, 4vw, 38px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.hero .hero__line {
+  display: inline-block;
+  line-height: 1.8;
+}
+
+.hero .hero__line--highlight {
+  position: relative;
+  padding-bottom: clamp(8px, 1.6vw, 12px);
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+.hero .hero__highlight {
+  position: absolute;
+  left: 0;
+  bottom: 28px;
+  width: 95%;
+  height: 8px;
+  background: #26c6d0;
+  z-index: -1;
+}
+
+.hero .hero__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff6f8f;
+}
+
+.hero .hero__badge {
+  position: absolute;
+  top: 65%;
+  left: clamp(-32px, 6vw, 40px);
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: left center;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.hero .hero__badge-line {
+  width: 113px;
+  height: 2px;
+  background: rgba(255, 255, 255);
+}
+
+.hero .hero__scrolldown {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(-50px, -18vw, -90px);
+  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 2vw, 12px);
+  z-index: 5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.hero .hero__scrolldown img {
+  width: 65px;
+  height: auto;
+}
+
+.hero .hero__scrolldown p {
+  margin: 0;
+}
+
+.hero .hero__scrolldown-line {
+  position: relative;
+  width: 2px;
+  height: 110px;
+  background: #fff;
+  mix-blend-mode: difference;
+  animation: hero-scrollDown 5s ease-in-out infinite;
+}
+
+@keyframes hero-scrollDown {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(50px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero .hero__scrolldown {
+    bottom: -60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero .hero__scrolldown {
+    // display: none;
+  }
+  .hero .hero__line {
+    gap: 0;
+  }
+}
+
+@media (max-width: 1280px) {
+  .hero {
+    min-height: 80vh;
+  }
+
+  .hero .hero__container {
+    padding: 0px 40px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero .hero__badge {
+    display: none;
+  }
+  .hero .hero__container {
+    padding: 80px 40px;
+  }
+  .hero .hero__content img {
+    width: clamp(140px, 18vw, 180px);
+  }
+
+  .hero .hero__heading {
+    font-size: clamp(20px, 4vw, 32px);
+    letter-spacing: 0.32em;
+    gap: 10px;
+  }
+
+  .hero .hero__line {
+    line-height: 1.6;
+  }
+
+  .hero .hero__highlight {
+    // height: 2px;
+    bottom: 0;
+  }
+
+  .hero .hero__dot {
+    width: 10px;
+    height: 10px;
+    bottom: 0;
+  }
+
+  .hero .hero__scrolldown {
+    bottom: -36px;
+    gap: 10px;
+  }
+
+  .hero .hero__scrolldown-line {
+    height: 90px;
+  }
+}
