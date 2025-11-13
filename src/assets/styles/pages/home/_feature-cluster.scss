@@ -471,7 +471,7 @@
   }
 
   @media (max-width: 768px) {
-    padding: clamp(180px, 40vw, 220px) 0 clamp(200px, 46vw, 260px);
+    padding: unset;
 
     &__awards {
       width: 100%;
@@ -551,8 +551,6 @@
     }
   }
   @media (max-width: 480px) {
-    padding: clamp(160px, 48vw, 210px) 0 clamp(160px, 54vw, 220px);
-
     &__title {
       font-size: 22px;
       letter-spacing: 0.24em;
