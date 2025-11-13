@@ -6,4 +6,4 @@ export { default as ecommerceIcon } from "./ecommerce.png";
 export { default as customerLoyaltyIcon } from "./customer-loyalty.png";
 export { default as digitalTransformationIcon } from "./digital-transformation.png";
 export { default as digitalMarketingIcon } from "./digital-marketing.png";
-export { default as brandingIcon } from "./branding.png";
+export { default as brandingIcon } from "./BRANDING.png";
